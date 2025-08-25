@@ -1,0 +1,27 @@
+{
+  "name": "@amgm-masamune/japanese-date",
+  "version": "0.0.0",
+  "description": "A Deno module for working with Japanese dates, such as the Japanese calendar(Era), Japanese old calendar.",
+  "exports": "./mod.ts",
+  "scripts": {
+    "dev": "deno run --watch main.ts"
+  },
+  "imports": {
+    "@js-temporal/polyfill": "npm:@js-temporal/polyfill@^0.5.1",
+    "@std/assert": "jsr:@std/assert@1"
+  },
+  "lint": {
+    "files": [
+      "deno.json",
+      "mod.ts",
+      "impls/**/*.{ts,tsx}",
+      "tests/**/*.{ts,tsx}"
+    ],
+    "options": {
+      "rules": {
+        "no-unused-vars": "error",
+        "prefer-const": "error"
+      }
+    }
+  }
+}
