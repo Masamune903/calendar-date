@@ -1,4 +1,5 @@
 import type { DayIndex } from "../../DayIndex/DayIndex.ts";
+import type { CalendarYear } from "./Calendar.ts";
 
 /**
  * 単に年としての値を表す抽象クラス
@@ -26,16 +27,6 @@ export abstract class Year {
   }
 }
 
-export abstract class YearInfo<Y extends Year = Year> {
-  readonly year: Y;
-  readonly startDayIndex: DayIndex;
-
-  constructor(year: Y, startDayIndex: DayIndex) {
-    this.year = year;
-    this.startDayIndex = startDayIndex;
-  }
-}
-
 /**
  * 閏年(同じ年を2回繰り返す)になる可能性のある暦で年を表すクラス
  */
@@ -54,15 +45,6 @@ export abstract class PossiblyLeapYear extends Year {
   override equals(other: unknown): boolean {
     return other instanceof PossiblyLeapYear 
       && super.equals(other) && this.isLeap === other.isLeap;
-  }
-}
-
-export abstract class PossiblyLeapYearInfo<Y extends PossiblyLeapYear = PossiblyLeapYear> extends YearInfo<Y> {
-  readonly isLeap: boolean;
-
-  constructor(value: Y, startDayIndex: DayIndex, isLeap: boolean) {
-    super(value, startDayIndex);
-    this.isLeap = isLeap;
   }
 }
 
@@ -85,7 +67,7 @@ type YearByDayQty = {
  * @param yearsByDayQty 
  * @param createYear 
  */
-export function* createYearItrFromDayQtys<Y extends YearByDayQty, R extends YearInfo<Year>>(yearsByDayQty: YearsByDayQty<Y>, createYear: (data: Y, startDayIndex: DayIndex) => R): Iterable<R> {
+export function* createYearItrFromDayQtys<Y extends YearByDayQty, R extends CalendarYear<Year>>(yearsByDayQty: YearsByDayQty<Y>, createYear: (data: Y, startDayIndex: DayIndex) => R): Iterable<R> {
   let dayIndex = yearsByDayQty.startDayIndex;
 
   for (const year of yearsByDayQty.years) {

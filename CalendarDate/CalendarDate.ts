@@ -1,8 +1,9 @@
 import type { DayIndex } from "../DayIndex/DayIndex.ts";
-import { CalendarOutOfRangeError, type Calendar } from "./Calendar/Calendar.ts";
-import type { Year, YearInfo } from "./Calendar/Year.ts";
-import type { Month, MonthInfo } from "./Calendar/Month.ts";
-import type { Day, DayInfo } from "./Calendar/Day.ts";
+import { CalendarOutOfRangeError } from "./Calendar/Calendar.ts";
+import type { CalendarYear, CalendarYearMonth, CalendarYearMonthDay, Calendar } from "./Calendar/Calendar.ts";
+import type { Year } from "./Calendar/Year.ts";
+import type { Month } from "./Calendar/Month.ts";
+import type { Day } from "./Calendar/Day.ts";
 
 /**
  * 日付を表す型。
@@ -25,7 +26,7 @@ export abstract class CalendarDate<
 
   // # ==== Year ====
 
-  #_yearInfo: YearInfo<Y> | undefined;
+  #_yearInfo: CalendarYear<Y> | undefined;
   get #yearInfo() {
     return this.#_yearInfo ??= yearOfDayIndex(this.dayIndex, this.calendar);
   }
@@ -36,7 +37,7 @@ export abstract class CalendarDate<
 
   // # ==== Month ====
 
-  #_monthInfo: MonthInfo<M> | undefined;
+  #_monthInfo: CalendarYearMonth<Y, M> | undefined;
   get #monthInfo() {
     return this.#_monthInfo ??= monthOfDayIndex(this.#yearInfo, this.dayIndex, this.calendar);
   }
@@ -47,7 +48,7 @@ export abstract class CalendarDate<
 
   // # ==== Day ====
 
-  #_dayInfo: DayInfo<D> | undefined;
+  #_dayInfo: CalendarYearMonthDay<Y, M, D> | undefined;
   get #dayInfo() {
     return this.#_dayInfo ??= dayOfDayIndex(this.#yearInfo, this.#monthInfo, this.dayIndex, this.calendar);
   }
@@ -56,7 +57,7 @@ export abstract class CalendarDate<
     return this.#dayInfo.day;
   }
 
-  protected constructor(dayIndex: DayIndex, calendar: Calendar<Y, M, D>, [year, month, day]: [yearInfo: YearInfo<Y> | undefined, monthInfo: MonthInfo<M> | undefined, dayInfo: DayInfo<D> | undefined] = [undefined, undefined, undefined]) {
+  protected constructor(dayIndex: DayIndex, calendar: Calendar<Y, M, D>, [year, month, day]: [yearInfo: CalendarYear<Y> | undefined, monthInfo: CalendarYearMonth<Y, M> | undefined, dayInfo: CalendarYearMonthDay<Y, M, D> | undefined] = [undefined, undefined, undefined]) {
     if (dayIndex < calendar.startDayIndex) {
       throw new CalendarOutOfRangeError(`このカレンダーでは範囲外の dayIndex が指定されました。`);
     }
@@ -91,7 +92,7 @@ export abstract class CalendarDate<
   }
 }
 
-function yearOfDayIndex<Y extends Year, M extends Month, D extends Day>(dayIndex: DayIndex, calendar: Calendar<Y, M, D>): YearInfo<Y> {
+function yearOfDayIndex<Y extends Year, M extends Month, D extends Day>(dayIndex: DayIndex, calendar: Calendar<Y, M, D>): CalendarYear<Y> {
   if (calendar.yearOf) {
     return calendar.yearOf(dayIndex);
   }
@@ -100,10 +101,10 @@ function yearOfDayIndex<Y extends Year, M extends Month, D extends Day>(dayIndex
     throw new Error("カレンダーが不正です。このカレンダーには年を取得するメソッドが1つも実装されていません。")
   }
 
-  let lastYearInfo: YearInfo<Y> | undefined;
+  let lastYearInfo: CalendarYear<Y> | undefined;
 
   for (const year of calendar.years()) {
-    if (year.startDayIndex > dayIndex) {
+    if (year.dayIndex > dayIndex) {
       if (lastYearInfo == null)
         throw new CalendarOutOfRangeError(`このカレンダーでは範囲外の dayIndex が指定されました。`);
 
@@ -119,7 +120,7 @@ function yearOfDayIndex<Y extends Year, M extends Month, D extends Day>(dayIndex
   return lastYearInfo;
 }
 
-function monthOfDayIndex<Y extends Year, M extends Month, D extends Day>(yearInfo: YearInfo<Y>, dayIndex: DayIndex, calendar: Calendar<Y, M, D>): MonthInfo<M> {
+function monthOfDayIndex<Y extends Year, M extends Month, D extends Day>(yearInfo: CalendarYear<Y>, dayIndex: DayIndex, calendar: Calendar<Y, M, D>): CalendarYearMonth<Y, M> {
   if (calendar.monthOf) {
     return calendar.monthOf(dayIndex, yearInfo);
   }
@@ -128,10 +129,10 @@ function monthOfDayIndex<Y extends Year, M extends Month, D extends Day>(yearInf
     throw new Error("カレンダーが不正です。このカレンダーには月を取得するメソッドが1つも実装されていません。");
   }
 
-  let lastMonthInfo: MonthInfo<M> | undefined;
+  let lastMonthInfo: CalendarYearMonth<Y, M> | undefined;
 
   for (const month of calendar.monthsOf(yearInfo)) {
-    if (month.startDayIndex > dayIndex) {
+    if (month.dayIndex > dayIndex) {
       if (lastMonthInfo == null)
         throw new CalendarOutOfRangeError(`${yearInfo.year}年において、このカレンダーでは範囲外の dayIndex が指定されました。`);
 
@@ -147,7 +148,7 @@ function monthOfDayIndex<Y extends Year, M extends Month, D extends Day>(yearInf
   return lastMonthInfo;
 }
 
-function dayOfDayIndex<Y extends Year, M extends Month, D extends Day>(yearInfo: YearInfo<Y>, monthInfo: MonthInfo<M>, dayIndex: DayIndex, calendar: Calendar<Y, M, D>): DayInfo<D> {
+function dayOfDayIndex<Y extends Year, M extends Month, D extends Day>(yearInfo: CalendarYear<Y>, monthInfo: CalendarYearMonth<Y, M>, dayIndex: DayIndex, calendar: Calendar<Y, M, D>): CalendarYearMonthDay<Y, M, D> {
   if (calendar.dayOf) {
     return calendar.dayOf(dayIndex, yearInfo, monthInfo);
   }
@@ -156,10 +157,10 @@ function dayOfDayIndex<Y extends Year, M extends Month, D extends Day>(yearInfo:
     throw new Error("カレンダーが不正です。このカレンダーには日を取得するメソッドが1つも実装されていません。");
   }
 
-  let lastDayInfo: DayInfo<D> | undefined;
+  let lastDayInfo: CalendarYearMonthDay<Y, M, D> | undefined;
 
   for (const day of calendar.daysOf(yearInfo, monthInfo)) {
-    if (day.startDayIndex > dayIndex) {
+    if (day.dayIndex > dayIndex) {
       if (lastDayInfo == null)
         throw new CalendarOutOfRangeError(`${yearInfo.year}年${monthInfo.month}月において、このカレンダーでは範囲外の dayIndex が指定されました。`);
 

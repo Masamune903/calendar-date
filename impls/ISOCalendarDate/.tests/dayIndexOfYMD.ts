@@ -53,8 +53,8 @@ export const knownDayIndexes = {
     ["4/2/28", { ymd: [4, 2, 28], dayIndex: dayIndexOfYMD(4, 2, 28), expected: 1153 }],
     ["4/2/29", { ymd: [4, 2, 29], dayIndex: dayIndexOfYMD(4, 2, 29), expected: 1154 }],
     ["4/3/1", { ymd: [4, 3, 1], dayIndex: dayIndexOfYMD(4, 3, 1), expected: 1155 }],
-    ["100/2/28", { ymd: [100, 2, 28], dayIndex: dayIndexOfYMD(100, 2, 28), expected: 36524 }],
-    ["100/3/1", { ymd: [100, 3, 1], dayIndex: dayIndexOfYMD(100, 3, 1), expected: 36525 }],
+    ["100/2/28", { ymd: [100, 2, 28], dayIndex: dayIndexOfYMD(100, 2, 28), expected: 36217 }],
+    ["100/3/1", { ymd: [100, 3, 1], dayIndex: dayIndexOfYMD(100, 3, 1), expected: 36218 }],
     ["2001/9/3", { ymd: [2001, 9, 3], dayIndex: dayIndexOfYMD(2001, 9, 3), expected: 730730 }],
   ])
 };

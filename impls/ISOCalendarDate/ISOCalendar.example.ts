@@ -5,3 +5,5 @@ console.log(date.year.value);
 console.log(date.month.value);
 console.log(date.day.value);
 console.log(ISOCalendarDate.from(date))
+
+ISOCalendarDate.from([1, 1, 1]).dayIndex;

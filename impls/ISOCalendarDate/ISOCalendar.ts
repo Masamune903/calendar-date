@@ -1,8 +1,13 @@
-import { CalendarOutOfRangeError, type Calendar } from "../../CalendarDate/Calendar/Calendar.ts";
+import { CalendarOutOfRangeError } from "../../CalendarDate/Calendar/Calendar.ts";
+import type { CalendarYear, CalendarYearMonth, CalendarYearMonthDay, Calendar } from "../../CalendarDate/Calendar/Calendar.ts";
 import type { DayIndex } from "../../DayIndex/DayIndex.ts";
-import { ISODay, ISODayInfo } from "./ISODay.ts";
-import { ISOMonth, ISOMonthInfo } from "./ISOMonth.ts";
-import { ISOYear, ISOYearInfo } from "./ISOYear.ts";
+import { ISODay } from "./ISODay.ts";
+import { ISOMonth } from "./ISOMonth.ts";
+import { ISOYear } from "./ISOYear.ts";
+
+type ISOCalendarYear = CalendarYear<ISOYear>;
+type ISOCalendarYearMonth = CalendarYearMonth<ISOYear, ISOMonth>;
+type ISOCalendarYearMonthDay = CalendarYearMonthDay<ISOYear, ISOMonth, ISODay>;
 
 const { floor: fl } = Math;
 
@@ -45,11 +50,11 @@ export class ISOCalendar implements Calendar<ISOYear, ISOMonth, ISODay> {
   static readonly instance = new ISOCalendar();
 
   /**
-   * ISOカレンダーの開始日（グレゴリオ暦の開始日 1582年10月15日）
+   * ISOカレンダーの開始日（拡張グレゴリオ暦の開始日 1年1月1日 (グレゴリオ暦は 1582年10月15日 = 577736)）
    */
-  readonly startDayIndex: DayIndex = 577736;
+  readonly startDayIndex: DayIndex = 0;
 
-  yearOf(dayIndex: DayIndex): ISOYearInfo {
+  yearOf(dayIndex: DayIndex): ISOCalendarYear {
     if (dayIndex < this.startDayIndex) {
       throw new CalendarOutOfRangeError(`グレゴリオ暦では 1582年10月15日 以前の日付は扱えません。`);
     }
@@ -71,21 +76,20 @@ export class ISOCalendar implements Calendar<ISOYear, ISOMonth, ISODay> {
     const yearValue = years400 * 400 + years100 * 100 + years4 * 4 + years1 + 1;
     const startDayIndex = years400Days + years100Days + years4Days + years1Days;
 
-    return new ISOYearInfo(new ISOYear(yearValue), startDayIndex);
+    return { year: new ISOYear(yearValue), dayIndex: startDayIndex, calendar: this };
   }
-  
-  *monthsOf(yearInfo: ISOYearInfo): IterableIterator<ISOMonthInfo> {
-    let dayIndex = yearInfo.startDayIndex;
+
+  *monthsOf(yearInfo: ISOCalendarYear): IterableIterator<ISOCalendarYearMonth> {
+    let dayIndex = yearInfo.dayIndex;
 
     for (let monthValue = 1; monthValue <= 12; monthValue++) {
-      const monthInfo = new ISOMonthInfo(new ISOMonth(monthValue), dayIndex);
-      yield monthInfo;
-      dayIndex += dayQtyInYearMonth(yearInfo.year, monthInfo.month);
+      yield { year: yearInfo.year, month: new ISOMonth(monthValue), dayIndex, calendar: this };
+      dayIndex += dayQtyInYearMonth(yearInfo.year, new ISOMonth(monthValue));
     }
   }
 
-  dayOf(dayIndex: DayIndex, _year: ISOYearInfo, month: ISOMonthInfo): ISODayInfo {
-    return new ISODayInfo(new ISODay(dayIndex - month.startDayIndex + 1), dayIndex);
+  dayOf(dayIndex: DayIndex, year: ISOCalendarYear, month: ISOCalendarYearMonth): ISOCalendarYearMonthDay {
+    return { year: year.year, month: month.month, day: new ISODay(dayIndex - month.dayIndex + 1), dayIndex, calendar: this };
   }
 
   dayIndexOf(year: ISOYear, month: ISOMonth, day: ISODay): DayIndex {
@@ -93,18 +97,22 @@ export class ISOCalendar implements Calendar<ISOYear, ISOMonth, ISODay> {
       throw new CalendarOutOfRangeError(`ISOカレンダーは 1年1月1日 以前の日付は扱えません。`);
     }
 
-    const lastYear = new ISOYear(year.value - 1);
-
-    /** 1つ前の年の最後の日の dayIndex */
-    const dayIndexOfLastYearEnd = lastYear.value * 365 + fl(lastYear.value / 4) - fl(lastYear.value / 100) + fl(lastYear.value / 400);
+    /** その年の最初の日の dayIndex (前の年の最後の日までの日数 dayQty と等しい) */
+    const dayIndexOfYearStart = (() => {
+      if (year.equals(new ISOYear(1)))
+        return 0;
+      
+      const lastYear = new ISOYear(year.value - 1);
+      return lastYear.value * 365 + fl(lastYear.value / 4) - fl(lastYear.value / 100) + fl(lastYear.value / 400);
+    })();
     
-    /** 1つ前の月の最後の日の dayIndex */
-    const dayIndexOfLastMonthEnd = dayIndexOfLastYearEnd 
+    /** その年月の最初の日の dayIndex (前の月の最後の日までの日数 dayQty と等しい) */
+    const dayIndexOfYearMonthStart = dayIndexOfYearStart 
       + dayQtyInYearMonths(year).entries()
         .filter(([m, ]) => m < month.value)
         .reduce((p, [, d]) => p + d, 0);
 
-    return dayIndexOfLastMonthEnd + (day.value - 1);  // 1年1月1日を0日とする
+    return dayIndexOfYearMonthStart + (day.value - 1);  // 1年1月1日を0日とする
   }
 
   equals(other: unknown): boolean {
