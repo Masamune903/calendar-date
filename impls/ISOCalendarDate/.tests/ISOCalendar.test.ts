@@ -6,11 +6,15 @@ import { ISODay } from "../ISODay.ts";
 import { ISOMonth } from "../ISOMonth.ts";
 import { ISOYear } from "../ISOYear.ts";
 
-Deno.test("ISOCalendar # 1/1/1", () => {
+Deno.test("ISOCalendar # 1/1/1 (最初の日)", () => {
   assertEquals(ISOCalendar.instance.dayIndexOf(new ISOYear(1), new ISOMonth(1), new ISODay(1)), knownDayIndexes.get("1/1/1").dayIndex); // dayIndex: 0
 });
 
-Deno.test("ISOCalendar # 1/2/1", () => {
+Deno.test("ISOCalendar # 1/1/31 (1か月)", () => {
+  assertEquals(ISOCalendar.instance.dayIndexOf(new ISOYear(1), new ISOMonth(1), new ISODay(31)), knownDayIndexes.get("1/1/31").dayIndex); // dayIndex: 30
+});
+
+Deno.test("ISOCalendar # 1/2/1 (1か月)", () => {
   assertEquals(ISOCalendar.instance.dayIndexOf(new ISOYear(1), new ISOMonth(2), new ISODay(1)), knownDayIndexes.get("1/2/1").dayIndex); // dayIndex: 31
 });
 
@@ -52,6 +56,33 @@ Deno.test("ISOCalendar # 100/3/1", () => {
 
 Deno.test("ISOCalendar # 2001/09/03", () => {
   assertEquals(ISOCalendar.instance.dayIndexOf(new ISOYear(2001), new ISOMonth(9), new ISODay(3)), knownDayIndexes.get("2001/9/3").dayIndex); // dayIndex: 730730
+});
+
+Deno.test("ISOCalendar unique 1/1/1 - 1000/12/31", () => {
+  const seen = new Map<string, number>();
+  const maxDayIndex = ISOCalendarDate.from([1000, 12, 31]).dayIndex;
+
+  for (let dayIndex = 0; dayIndex <= maxDayIndex; dayIndex++) {
+    const date = ISOCalendarDate.from(dayIndex);
+    assertEquals(seen.has(date.toString()), false, `Duplicate date: ${date} (dayIndex: ${dayIndex})`);
+    seen.set(date.toString(), dayIndex);
+  }
+});
+
+Deno.test("ISOCalendar unique 1000/1/1 - 3000/12/31", () => {
+  const stTime = performance.now();
+  const seen = new Map<string, number>();
+  const startDayIndex = ISOCalendarDate.from([1000, 1, 1]).dayIndex;
+  const maxDayIndex = ISOCalendarDate.from([3000, 12, 31]).dayIndex;
+
+  for (let dayIndex = startDayIndex; dayIndex <= maxDayIndex; dayIndex++) {
+    const date = ISOCalendarDate.from(dayIndex);
+    const dateStr = date.toString();
+    assertEquals(seen.has(dateStr), false, `Duplicate date: ${date} (dayIndex: ${dayIndex})`);
+    seen.set(dateStr, dayIndex);
+  }
+
+  console.log("test ended in", performance.now() - stTime, "ms");
 });
 
 Deno.test("ISOCalendarDate vs ISOCalendarDate", () => {
@@ -99,3 +130,19 @@ Deno.test("ISOCalendar vs native Date - toDate()", () => {
   assertEquals(date.toDate().getTime(), nativeDate.getTime());
 });
 
+Deno.test("ISOCalendarDate vs native Date - 1800-2200", () => {
+  const stTime = performance.now();
+
+  const maxDateTime = new Date("2200-01-01").getTime();
+
+  let isoDate = ISOCalendarDate.from([1800, 1, 1]);
+  for (let date = new Date("1800-01-01T00:00:00"); date.getTime() <= maxDateTime; date = new Date(date.setDate(date.getDate() + 1))) {
+    const datedISODate = isoDate.toDate();
+    assertEquals(datedISODate.toDateString(), date.toDateString());
+    assertEquals([isoDate.year.value, isoDate.month.value, isoDate.day.value], [date.getFullYear(), date.getMonth() + 1, date.getDate()]);
+
+    isoDate = ISOCalendarDate.from(isoDate.dayIndex + 1);
+  }
+
+  console.log("test ended in", performance.now() - stTime, "ms");
+});

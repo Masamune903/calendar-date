@@ -22,7 +22,7 @@ export class ISOCalendarDate extends CalendarDate<ISOYear, ISOMonth, ISODay> {
   }
 
   toDate() {
-    return new Date(this.year.value, this.month.value - 1, this.day.value);
+    return new Date(this.year.value, this.month.value - 1, this.day.value, 0, 0, 0, 0);
   }
 
   override toString() {

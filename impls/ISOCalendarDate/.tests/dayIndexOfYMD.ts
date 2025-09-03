@@ -45,6 +45,7 @@ export const knownDayIndexes = {
   },
   dataset: new Map<string, KnownDaysIndex>([
     ["1/1/1", { ymd: [1, 1, 1], dayIndex: dayIndexOfYMD(1, 1, 1), expected: 0 }],
+    ["1/1/31", { ymd: [1, 1, 31], dayIndex: dayIndexOfYMD(1, 1, 31), expected: 30 }],
     ["1/2/1", { ymd: [1, 2, 1], dayIndex: dayIndexOfYMD(1, 2, 1), expected: 31 }],
     ["1/2/28", { ymd: [1, 2, 28], dayIndex: dayIndexOfYMD(1, 2, 28), expected: 58 }],
     ["1/3/1", { ymd: [1, 3, 1], dayIndex: dayIndexOfYMD(1, 3, 1), expected: 59 }],

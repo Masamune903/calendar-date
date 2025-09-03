@@ -9,7 +9,7 @@ type ISOCalendarYear = CalendarYear<ISOYear>;
 type ISOCalendarYearMonth = CalendarYearMonth<ISOYear, ISOMonth>;
 type ISOCalendarYearMonthDay = CalendarYearMonthDay<ISOYear, ISOMonth, ISODay>;
 
-const { floor: fl } = Math;
+const { floor: fl, min } = Math;
 
 const dayQtyInNoLeapYear = new Map<number, number>([
   [1, 31],
@@ -66,11 +66,11 @@ export class ISOCalendar implements Calendar<ISOYear, ISOMonth, ISODay> {
 
     const years400 = fl(dayIndex / daysIn400Years);
     const years400Days = years400 * daysIn400Years;
-    const years100 = fl((dayIndex - years400Days) / daysIn100Years);
+    const years100 = min(400/100 - 1, fl((dayIndex - years400Days) / daysIn100Years));
     const years100Days = years100 * daysIn100Years;
-    const years4 = fl((dayIndex - years400Days - years100Days) / daysIn4Years);
+    const years4 = min(100/4 - 1, fl((dayIndex - years400Days - years100Days) / daysIn4Years));
     const years4Days = years4 * daysIn4Years;
-    const years1 = fl((dayIndex - years400Days - years100Days - years4Days) / daysIn1Year);
+    const years1 = min(4/1 - 1, fl((dayIndex - years400Days - years100Days - years4Days) / daysIn1Year)); // years1 は 4 以上にはならない (特に閏年の最終日は4になってしまう)
     const years1Days = years1 * daysIn1Year;
 
     const yearValue = years400 * 400 + years100 * 100 + years4 * 4 + years1 + 1;
