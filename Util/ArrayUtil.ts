@@ -3,9 +3,3 @@ export class ArrayUtil {
     return Array.isArray(value);
   }
 }
-
-declare global {
-  interface Array<T> {
-    isArray(): this is T[] | readonly T[];
-  }
-}
