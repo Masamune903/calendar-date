@@ -1,6 +1,7 @@
 {
-  "name": "@amgm-masamune/japanese-date",
-  "version": "0.0.0",
+  "name": "@amgm-masamune/calendar-date",
+  "version": "0.1.0",
+  "license": "MIT",
   "description": "A Deno module for working with Japanese dates, such as the Japanese calendar(Era), Japanese old calendar.",
   "exports": "./mod.ts",
   "scripts": {
