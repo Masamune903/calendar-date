@@ -10,11 +10,11 @@ export abstract class Day {
     this.number = number;
   }
 
-  toString() {
+  toString(): string {
     return `${this.number}`;
   }
 
-  toLocaleString(locale: string, options?: Pick<Intl.DateTimeFormatOptions, "day">) {
+  toLocaleString(locale: string, options?: Pick<Intl.DateTimeFormatOptions, "day">): string {
     const defaultOptions: Intl.DateTimeFormatOptions = { day: "numeric" };
 
     return new Intl.DateTimeFormat(locale, { ...defaultOptions, ...options }).format(new Date(`2000-1-${this.number}`));

@@ -19,7 +19,7 @@ type KyurekiCalendarDateLike = CalendarDateLike<KyurekiYear, KyurekiMonth, Kyure
 export class KyurekiCalendarDate extends CalendarDate<KyurekiYear, KyurekiMonth, KyurekiDay> {
   static readonly calendar = KyurekiCalendar.instance;
 
-  get rokuyo() {
+  get rokuyo(): KyurekiRokuyo {
     return new KyurekiRokuyo((this.month.number + this.day.number - 2) % 6);
   }
 
@@ -27,7 +27,7 @@ export class KyurekiCalendarDate extends CalendarDate<KyurekiYear, KyurekiMonth,
     super(dayIndex, KyurekiCalendar.instance);
   }
 
-  override toString() {
+  override toString(): string {
     const yearNumber = this.year.number;
     const monthLeap = this.month.isLeap ? " (leap)" : "";
     const monthNumber = this.month.number;

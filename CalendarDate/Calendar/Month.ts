@@ -9,11 +9,11 @@ export abstract class Month {
     this.number = number;
   }
 
-  toString() {
+  toString(): string {
     return `${this.number}`;
   }
 
-  toLocaleString(locale: string, options?: Pick<Intl.DateTimeFormatOptions, "month">) {
+  toLocaleString(locale: string, options?: Pick<Intl.DateTimeFormatOptions, "month">): string {
     const defaultOptions: Intl.DateTimeFormatOptions = { month: "long" };
 
     return new Intl.DateTimeFormat(locale, { ...defaultOptions, ...options }).format(new Date(`2000-${this.number}-1`));
