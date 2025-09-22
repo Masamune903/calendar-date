@@ -2,7 +2,7 @@ import { CalendarOutOfRangeError } from "../../CalendarDate/Calendar/Calendar.ts
 import { Month } from "../../CalendarDate/Calendar/Month.ts";
 
 export class ISOMonth extends Month {
-  get name() {
+  get name(): string {
     return names["ja-JP"](this);
   }
 

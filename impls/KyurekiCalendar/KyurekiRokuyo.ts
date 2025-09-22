@@ -3,11 +3,11 @@ export class KyurekiRokuyo {
   readonly index: number;
   
   /** 1～6 */
-  get number() {
+  get number(): number {
     return this.index + 1;
   }
 
-  get name() {
+  get name(): string {
     return names["ja-JP"](this);
   }
 

@@ -1,7 +1,7 @@
 export class ISOWeek {
   readonly number: number;
 
-  get name() {
+  get name(): string {
     return weekNames["ja-JP"](this);
   }
 
@@ -27,13 +27,13 @@ const weekNames = {
 };
 
 export class ISODayOfWeek {
-  static readonly SUNDAY = new ISODayOfWeek(0);
-  static readonly MONDAY = new ISODayOfWeek(1);
-  static readonly TUESDAY = new ISODayOfWeek(2);
-  static readonly WEDNESDAY = new ISODayOfWeek(3);
-  static readonly THURSDAY = new ISODayOfWeek(4);
-  static readonly FRIDAY = new ISODayOfWeek(5);
-  static readonly SATURDAY = new ISODayOfWeek(6);
+  static readonly SUNDAY: ISODayOfWeek = new ISODayOfWeek(0);
+  static readonly MONDAY: ISODayOfWeek = new ISODayOfWeek(1);
+  static readonly TUESDAY: ISODayOfWeek = new ISODayOfWeek(2);
+  static readonly WEDNESDAY: ISODayOfWeek = new ISODayOfWeek(3);
+  static readonly THURSDAY: ISODayOfWeek = new ISODayOfWeek(4);
+  static readonly FRIDAY: ISODayOfWeek = new ISODayOfWeek(5);
+  static readonly SATURDAY: ISODayOfWeek = new ISODayOfWeek(6);
 
   /** 
    * インデックスは 0:Sun, 1:Mon, ..., 6:Sat
@@ -45,15 +45,15 @@ export class ISODayOfWeek {
    * 曜日番号は 1:Mon, 2:Tue, ..., 7:Sun
    * （人間が理解しやすい形）
    */
-  get number() {
+  get number(): number {
     return this.index || 7;
   }
 
-  get shortName() {
+  get shortName(): string {
     return shortNames["ja-JP"](this);
   }
 
-  get name() {
+  get name(): string {
     return names["ja-JP"](this);
   }
 

@@ -32,7 +32,7 @@ export abstract class CalendarDate<
     return this.#_yearInfo ??= yearOfDayIndex(this.dayIndex, this.calendar);
   }
 
-  get year() {
+  get year(): Y {
     return this.#yearInfo.year;
   }
 
@@ -43,7 +43,7 @@ export abstract class CalendarDate<
     return this.#_monthInfo ??= monthOfDayIndex(this.#yearInfo, this.dayIndex, this.calendar);
   }
   
-  get month() {
+  get month(): M {
     return this.#monthInfo.month;
   }
 
@@ -54,7 +54,7 @@ export abstract class CalendarDate<
     return this.#_dayInfo ??= dayOfDayIndex(this.#yearInfo, this.#monthInfo, this.dayIndex, this.calendar);
   }
 
-  get day() {
+  get day(): D {
     return this.#dayInfo.day;
   }
 
@@ -70,15 +70,15 @@ export abstract class CalendarDate<
     this.#_dayInfo = day;
   }
 
-  compare(other: DayIndexedDate) {
+  compare(other: DayIndexedDate): number {
     return this.dayIndex - other.dayIndex;
   }
 
-  toString() {
+  toString(): string {
     return `${this.year}-${this.month}-${this.day}`;
   }
 
-  protected static fromYMD<Y extends Year, M extends Month, D extends Day>(like: CalendarDateLike<Y, M, D>, calendar: Calendar<Y, M, D>) {
+  protected static fromYMD<Y extends Year, M extends Month, D extends Day>(like: CalendarDateLike<Y, M, D>, calendar: Calendar<Y, M, D>): { dayIndex: DayIndex; calendar: Calendar<Y, M, D> } {
     if (typeof like === "number") {
       return { dayIndex: like, calendar };
     }

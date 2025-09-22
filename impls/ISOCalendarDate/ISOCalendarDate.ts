@@ -23,7 +23,7 @@ type ISOCalendarDateCYMD = {
 export class ISOCalendarDate extends CalendarDate<ISOYear, ISOMonth, ISODay> {
   override calendar: ISOCalendar;
 
-  get dayOfWeek() {
+  get dayOfWeek(): ISODayOfWeek {
     return new ISODayOfWeek(this.dayIndex % 7);
   }
 
@@ -45,11 +45,11 @@ export class ISOCalendarDate extends CalendarDate<ISOYear, ISOMonth, ISODay> {
     return ISOCalendarDate.compare(this, other);
   }
 
-  toDate() {
+  toDate(): Date {
     return new Date(this.year.number, this.month.number - 1, this.day.number, 0, 0, 0, 0);
   }
 
-  override toString() {
+  override toString(): string {
     return `ISOCalendarDate { ${this.dayIndex} "${this.year}-${this.month}-${this.day}" }`;
   }
 

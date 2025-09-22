@@ -2,7 +2,7 @@ import { CalendarOutOfRangeError } from "../../CalendarDate/Calendar/Calendar.ts
 import { Day } from "../../CalendarDate/Calendar/Day.ts";
 
 export class ISODay extends Day {
-  get name() {
+  get name(): string {
     return names["ja-JP"](this);
   }
 

@@ -11,17 +11,14 @@
     "@std/assert": "jsr:@std/assert@1"
   },
   "lint": {
-    "files": [
+    "rules": {
+      "tags": ["jsr", "recommended"]
+    },
+    "include": [
       "deno.json",
       "mod.ts",
       "impls/**/*.{ts,tsx}",
       "tests/**/*.{ts,tsx}"
-    ],
-    "options": {
-      "rules": {
-        "no-unused-vars": "error",
-        "prefer-const": "error"
-      }
-    }
+    ]
   }
 }

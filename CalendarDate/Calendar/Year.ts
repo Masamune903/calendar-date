@@ -11,11 +11,11 @@ export abstract class Year {
     this.number = number;
   }
 
-  toString() {
+  toString(): string {
     return `${this.number}`;
   }
 
-  toLocaleString(locale: string, options?: Pick<Intl.DateTimeFormatOptions, "year">) {
+  toLocaleString(locale: string, options?: Pick<Intl.DateTimeFormatOptions, "year">): string {
     const defaultOptions: Intl.DateTimeFormatOptions = { year: "numeric" };
 
     return new Intl.DateTimeFormat(locale, { ...defaultOptions, ...options }).format(new Date(`${this.number}-1-1`));
@@ -75,29 +75,3 @@ export function* createYearItrFromDayQtys<Y extends YearByDayQty, R extends Cale
     dayIndex += year.dayQty;
   }
 }
-
-/* example
-
-const yearsByDayQty: YearsByDayQty = {
-  startDayIndex: 0,
-  years: [
-    { yearValue: 2020, dayQty: 366 },
-    { yearValue: 2021, dayQty: 365 },
-    { yearValue: 2022, dayQty: 365 },
-  ],
-};
-
-const createdYears = createYearItrFromDayQtys(yearsByDayQty, (data, startDayIndex) =>
-  new Year(data.yearValue, startDayIndex)
-);
-
-const yearsByDayQty: YearsByDayQty = {
-  startDayIndex: 0,
-  years: (function* () {
-    for (let yearValue = 1; ; yearValue++) {
-      yield { yearValue, dayQty: (yearValue % 4 === 0 && yearValue % 100 !== 0) || (yearValue % 400 === 0) ? 366 : 365 };
-    }
-  })()
-};
-
-*/

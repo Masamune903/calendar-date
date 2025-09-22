@@ -12,15 +12,19 @@ type KyurekiCalendarYearMonth = CalendarYearMonth<KyurekiYear, KyurekiMonth>;
 type KyurekiCalendarYearMonthDay = CalendarYearMonthDay<KyurekiYear, KyurekiMonth, KyurekiDay>;
 
 export class KyurekiCalendar implements Calendar<KyurekiYear, KyurekiMonth, KyurekiDay> {
-  static readonly instance = new KyurekiCalendar();
+  static readonly instance: KyurekiCalendar = new KyurekiCalendar();
 
   readonly startDayIndex: DayIndex = kyurekiCalendarDataset.startDayIndex;
 
   #min?: KyurekiCalendarDate;
-  get min() { return this.#min ??= KyurekiCalendarDate.from(this.startDayIndex) };
+  get min(): KyurekiCalendarDate {
+    return this.#min ??= KyurekiCalendarDate.from(this.startDayIndex)
+  };
 
   #max?: KyurekiCalendarDate;
-  get max() { return this.#max ??= KyurekiCalendarDate.from(ISOCalendarDate.from([2199, 12, 31]).dayIndex) };
+  get max(): KyurekiCalendarDate {
+    return this.#max ??= KyurekiCalendarDate.from(ISOCalendarDate.from([2199, 12, 31]).dayIndex);
+  }
 
   yearOf(dayIndex: DayIndex): KyurekiCalendarYear {
     const yearInfo = kyurekiCalendarDataset.findYearByDayIndex(dayIndex);

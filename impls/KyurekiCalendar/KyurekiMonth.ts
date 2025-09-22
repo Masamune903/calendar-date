@@ -2,11 +2,11 @@ import { CalendarOutOfRangeError } from "../../CalendarDate/Calendar/Calendar.ts
 import { PossiblyLeapMonth } from "../../CalendarDate/Calendar/Month.ts";
 
 export class KyurekiMonth extends PossiblyLeapMonth {
-  get name() {
+  get name(): string {
     return names["ja-JP"](this);
   }
 
-  get alias() {
+  get alias(): string {
     return aliases["ja-JP"](this);
   }
 

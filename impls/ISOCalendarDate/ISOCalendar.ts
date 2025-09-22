@@ -47,7 +47,7 @@ function dayQtyInYearMonth(year: ISOYear, month: ISOMonth): number {
 };
 
 export class ISOCalendar implements Calendar<ISOYear, ISOMonth, ISODay> {
-  static readonly instance = new ISOCalendar();
+  static readonly instance: ISOCalendar = new ISOCalendar();
 
   /**
    * ISOカレンダーの開始日（拡張グレゴリオ暦の開始日 1年1月1日 (グレゴリオ暦は 1582年10月15日 = 577736)）
