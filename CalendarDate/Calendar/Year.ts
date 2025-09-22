@@ -5,25 +5,25 @@ import type { CalendarYear } from "./Calendar.ts";
  * 単に年としての値を表す抽象クラス
  */
 export abstract class Year {
-  readonly value: number;
+  readonly number: number;
 
-  constructor(value: number) {
-    this.value = value;
+  constructor(number: number) {
+    this.number = number;
   }
 
   toString() {
-    return `${this.value}`;
+    return `${this.number}`;
   }
 
   toLocaleString(locale: string, options?: Pick<Intl.DateTimeFormatOptions, "year">) {
     const defaultOptions: Intl.DateTimeFormatOptions = { year: "numeric" };
 
-    return new Intl.DateTimeFormat(locale, { ...defaultOptions, ...options }).format(new Date(`${this.value}-1-1`));
+    return new Intl.DateTimeFormat(locale, { ...defaultOptions, ...options }).format(new Date(`${this.number}-1-1`));
   }
 
   equals(other: unknown): boolean {
     if (!(other instanceof Year)) return false;
-    return this.value === other.value;
+    return this.number === other.number;
   }
 }
 
@@ -39,7 +39,7 @@ export abstract class PossiblyLeapYear extends Year {
   }
 
   override toString(): string {
-    return `${this.isLeap ? "bis" : ""}${this.value}`;
+    return `${this.isLeap ? "bis" : ""}${this.number}`;
   }
 
   override equals(other: unknown): boolean {

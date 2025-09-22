@@ -4,25 +4,25 @@ import type { Month } from "./Month.ts";
 import type { Year } from "./Year.ts";
 
 export abstract class Day {
-  readonly value: number;
+  readonly number: number;
 
-  constructor(value: number) {
-    this.value = value;
+  constructor(number: number) {
+    this.number = number;
   }
 
   toString() {
-    return `${this.value}`;
+    return `${this.number}`;
   }
 
   toLocaleString(locale: string, options?: Pick<Intl.DateTimeFormatOptions, "day">) {
     const defaultOptions: Intl.DateTimeFormatOptions = { day: "numeric" };
 
-    return new Intl.DateTimeFormat(locale, { ...defaultOptions, ...options }).format(new Date(`2000-1-${this.value}`));
+    return new Intl.DateTimeFormat(locale, { ...defaultOptions, ...options }).format(new Date(`2000-1-${this.number}`));
   }
 
   equals(other: unknown): boolean {
     if (!(other instanceof Day)) return false;
-    return this.value === other.value;
+    return this.number === other.number;
   }
 
 }
@@ -39,7 +39,7 @@ export abstract class PossiblyLeapDay extends Day {
   }
 
   override toString(): string {
-    return `${this.isLeap ? "bis" : ""}${this.value}`;
+    return `${this.isLeap ? "bis" : ""}${this.number}`;
   }
 
   override equals(other: unknown): boolean {

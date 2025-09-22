@@ -31,7 +31,7 @@ const dayQtyInLeapYear = new Map<number, number>(
 );
 
 function hasDay0229Year(year: ISOYear) {
-  return (year.value % 4 === 0 && year.value % 100 !== 0) || (year.value % 400 === 0);
+  return (year.number % 4 === 0 && year.number % 100 !== 0) || (year.number % 400 === 0);
 }
 
 function dayQtyInYearMonths(year: ISOYear) {
@@ -41,8 +41,8 @@ function dayQtyInYearMonths(year: ISOYear) {
 
 function dayQtyInYearMonth(year: ISOYear, month: ISOMonth): number {
   const monthDays = dayQtyInYearMonths(year);
-  const dayQty = monthDays.get(month.value);
-  if (!dayQty) throw new Error(`Invalid month: ${month.value}`);
+  const dayQty = monthDays.get(month.number);
+  if (!dayQty) throw new Error(`Invalid month: ${month.number}`);
   return dayQty;
 };
 
@@ -93,7 +93,7 @@ export class ISOCalendar implements Calendar<ISOYear, ISOMonth, ISODay> {
   }
 
   dayIndexOf(year: ISOYear, month: ISOMonth, day: ISODay): DayIndex {
-    if (year.value < 1 && month.value < 1 && day.value < 1) {
+    if (year.number < 1 && month.number < 1 && day.number < 1) {
       throw new CalendarOutOfRangeError(`ISOカレンダーは 1年1月1日 以前の日付は扱えません。`);
     }
 
@@ -102,23 +102,27 @@ export class ISOCalendar implements Calendar<ISOYear, ISOMonth, ISODay> {
       if (year.equals(new ISOYear(1)))
         return 0;
       
-      const lastYear = new ISOYear(year.value - 1);
-      return lastYear.value * 365 + fl(lastYear.value / 4) - fl(lastYear.value / 100) + fl(lastYear.value / 400);
+      const lastYear = new ISOYear(year.number - 1);
+      return lastYear.number * 365 + fl(lastYear.number / 4) - fl(lastYear.number / 100) + fl(lastYear.number / 400);
     })();
     
     /** その年月の最初の日の dayIndex (前の月の最後の日までの日数 dayQty と等しい) */
     const dayIndexOfYearMonthStart = dayIndexOfYearStart 
       + dayQtyInYearMonths(year).entries()
-        .filter(([m, ]) => m < month.value)
+        .filter(([m, ]) => m < month.number)
         .reduce((p, [, d]) => p + d, 0);
 
-    return dayIndexOfYearMonthStart + (day.value - 1);  // 1年1月1日を0日とする
+    return dayIndexOfYearMonthStart + (day.number - 1);  // 1年1月1日を0日とする
   }
 
   equals(other: unknown): boolean {
     if (!(other instanceof ISOCalendar)) return false;
 
     return this === other;
+  }
+
+  toString(): string {
+    return `ISOCalendar {}`;
   }
 
   private constructor() {}

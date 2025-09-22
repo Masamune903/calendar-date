@@ -3,25 +3,25 @@ import type { CalendarYearMonth } from "./Calendar.ts";
 import type { Year } from "./Year.ts";
 
 export abstract class Month {
-  readonly value: number;
+  readonly number: number;
 
-  constructor(value: number) {
-    this.value = value;
+  constructor(number: number) {
+    this.number = number;
   }
 
   toString() {
-    return `${this.value}`;
+    return `${this.number}`;
   }
 
   toLocaleString(locale: string, options?: Pick<Intl.DateTimeFormatOptions, "month">) {
     const defaultOptions: Intl.DateTimeFormatOptions = { month: "long" };
 
-    return new Intl.DateTimeFormat(locale, { ...defaultOptions, ...options }).format(new Date(`2000-${this.value}-1`));
+    return new Intl.DateTimeFormat(locale, { ...defaultOptions, ...options }).format(new Date(`2000-${this.number}-1`));
   }
 
   equals(other: unknown): boolean {
     if (!(other instanceof Month)) return false;
-    return this.value === other.value;
+    return this.number === other.number;
   }
 }
 
@@ -37,7 +37,7 @@ export abstract class PossiblyLeapMonth extends Month {
   }
 
   override toString(): string {
-    return `${this.isLeap ? "bis" : ""}${this.value}`;
+    return `${this.isLeap ? "bis" : ""}${this.number}`;
   }
 
   override equals(other: unknown): boolean {

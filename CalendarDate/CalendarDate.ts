@@ -1,16 +1,17 @@
-import type { DayIndex } from "../DayIndex/DayIndex.ts";
+import type { DayIndex, DayIndexedDate } from "../DayIndex/DayIndex.ts";
 import { CalendarOutOfRangeError } from "./Calendar/Calendar.ts";
 import type { CalendarYear, CalendarYearMonth, CalendarYearMonthDay, Calendar } from "./Calendar/Calendar.ts";
 import type { Year } from "./Calendar/Year.ts";
 import type { Month } from "./Calendar/Month.ts";
 import type { Day } from "./Calendar/Day.ts";
+import { ArrayUtil } from "../Util/ArrayUtil.ts";
 
 /**
  * 日付を表す型。
  * ※ここでは内部的な型なため、Year, Month, Day として受け取る。
  * （leapがあいまいになる number での受け取りはできない。それぞれのカレンダーで実装する。）
  */
-export type CalendarDateLike<Y extends Year, M extends Month, D extends Day> = DayIndex | {
+export type CalendarDateLike<Y extends Year, M extends Month, D extends Day> = DayIndex | DayIndexedDate | {
   readonly year: Y;
   readonly month: M;
   readonly day: D;
@@ -20,7 +21,7 @@ export abstract class CalendarDate<
   Y extends Year,
   M extends Month,
   D extends Day
-> {
+> implements DayIndexedDate {
   readonly dayIndex: DayIndex;
   readonly calendar: Calendar<Y, M, D>;
 
@@ -69,6 +70,10 @@ export abstract class CalendarDate<
     this.#_dayInfo = day;
   }
 
+  compare(other: DayIndexedDate) {
+    return this.dayIndex - other.dayIndex;
+  }
+
   toString() {
     return `${this.year}-${this.month}-${this.day}`;
   }
@@ -78,16 +83,15 @@ export abstract class CalendarDate<
       return { dayIndex: like, calendar };
     }
 
-    const isArray = (value: unknown): value is unknown[] | readonly unknown[] =>
-      Array.isArray(value);
-
-    if (isArray(like)) {
-      const [year, month, day] = like;
-      const dayIndex = calendar.dayIndexOf(year, month, day);
-      return { dayIndex, calendar };
+    if ("dayIndex" in like) {
+      return { dayIndex: like.dayIndex, calendar };
     }
 
-    const dayIndex = calendar.dayIndexOf(like.year, like.month, like.day);
+    const [year, month, day] = 
+      ArrayUtil.isArray(like) ? like : [like.year, like.month, like.day];
+    
+    const dayIndex = calendar.dayIndexOf(year, month, day);
+    
     return { dayIndex, calendar };
   }
 }

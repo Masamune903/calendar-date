@@ -3,3 +3,7 @@
  * 1年1月1日を0とする。
  */
 export type DayIndex = number;
+
+export interface DayIndexedDate {
+  readonly dayIndex: DayIndex;
+}

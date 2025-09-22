@@ -1,0 +1,28 @@
+### 1日取得（2001年9月3日）
+GET https://koyomi.zingsystem.com/api/?mode=d&cnt=1&targetyyyy=2001&targetmm=9&targetdd=3
+
+
+### 1か月取得（2001年9月）-> 2001/9/1～2001/9/30
+GET https://koyomi.zingsystem.com/api/?mode=m&cnt=1&targetyyyy=2001&targetmm=9&targetdd=1
+
+
+### 365日取得（2020年。新暦閏年。旧暦4閏月）-> 2020/1/1～2020/12/30
+GET https://koyomi.zingsystem.com/api/?mode=d&cnt=365&targetyyyy=2020&targetmm=1&targetdd=1
+
+
+### 366日取得（2020年。新暦閏年。旧暦4閏月）-> 200 OK ({ "err": "401" })
+GET https://koyomi.zingsystem.com/api/?mode=d&cnt=366&targetyyyy=2020&targetmm=1&targetdd=1
+
+
+### 12か月取得（2020年。新暦閏年。旧暦4閏月）-> 2020/1/1～2020/12/31
+GET https://koyomi.zingsystem.com/api/?mode=m&cnt=12&targetyyyy=2020&targetmm=1&targetdd=1
+
+### 最小値
+GET https://koyomi.zingsystem.com/api/?mode=d&cnt=1&targetyyyy=0100&targetmm=1&targetdd=1
+
+
+### 最大値
+GET https://koyomi.zingsystem.com/api/?mode=d&cnt=1&targetyyyy=2200&targetmm=12&targetdd=31
+
+### 最小値予定 (旧1800/01/01)
+GET https://koyomi.zingsystem.com/api/?mode=m&cnt=12&targetyyyy=1800&targetmm=1&targetdd=25

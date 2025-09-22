@@ -92,23 +92,23 @@ Deno.test("ISOCalendarDate vs ISOCalendarDate", () => {
 
 Deno.test("ISOCalendarDate vs ISOCalendarDate - from dayIndex", () => {
   const date = ISOCalendarDate.from(730730);  // 2001年9月3日
-  assertEquals(date.year.value, 2001);
-  assertEquals(date.month.value, 9);
-  assertEquals(date.day.value, 3);
+  assertEquals(date.year.number, 2001);
+  assertEquals(date.month.number, 9);
+  assertEquals(date.day.number, 3);
 });
 
 Deno.test("ISOCalendarDate vs ISOCalendarDate - from YMD (Tuple)", () => {
   const date = ISOCalendarDate.from([2001, 9, 3]);
-  assertEquals(date.year.value, 2001);
-  assertEquals(date.month.value, 9);
-  assertEquals(date.day.value, 3);
+  assertEquals(date.year.number, 2001);
+  assertEquals(date.month.number, 9);
+  assertEquals(date.day.number, 3);
 });
 
 Deno.test("ISOCalendarDate vs ISOCalendarDate - from YMD (Record)", () => {
   const date = ISOCalendarDate.from({ year: 2001, month: 9, day: 3 });
-  assertEquals(date.year.value, 2001);
-  assertEquals(date.month.value, 9);
-  assertEquals(date.day.value, 3);
+  assertEquals(date.year.number, 2001);
+  assertEquals(date.month.number, 9);
+  assertEquals(date.day.number, 3);
 });
 
 Deno.test("ISOCalendarDate vs ISOCalendarDate - must be equal", () => {
@@ -119,9 +119,9 @@ Deno.test("ISOCalendarDate vs ISOCalendarDate - must be equal", () => {
 Deno.test("ISOCalendarDate vs native Date", () => {
   const date = ISOCalendarDate.from({ year: 2001, month: 9, day: 3 });
   const nativeDate = new Date(2001, 8, 3);
-  assertEquals(date.year.value, nativeDate.getFullYear());
-  assertEquals(date.month.value, nativeDate.getMonth() + 1);
-  assertEquals(date.day.value, nativeDate.getDate());
+  assertEquals(date.year.number, nativeDate.getFullYear());
+  assertEquals(date.month.number, nativeDate.getMonth() + 1);
+  assertEquals(date.day.number, nativeDate.getDate());
 });
 
 Deno.test("ISOCalendar vs native Date - toDate()", () => {
@@ -139,7 +139,7 @@ Deno.test("ISOCalendarDate vs native Date - 1800-2200", () => {
   for (let date = new Date("1800-01-01T00:00:00"); date.getTime() <= maxDateTime; date = new Date(date.setDate(date.getDate() + 1))) {
     const datedISODate = isoDate.toDate();
     assertEquals(datedISODate.toDateString(), date.toDateString());
-    assertEquals([isoDate.year.value, isoDate.month.value, isoDate.day.value], [date.getFullYear(), date.getMonth() + 1, date.getDate()]);
+    assertEquals([isoDate.year.number, isoDate.month.number, isoDate.day.number], [date.getFullYear(), date.getMonth() + 1, date.getDate()]);
 
     isoDate = ISOCalendarDate.from(isoDate.dayIndex + 1);
   }
