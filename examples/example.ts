@@ -1,4 +1,4 @@
-import { ISOCalendarDate, KyurekiCalendarDate } from "@amgm-masamune/japanese-date";
+import { ISOCalendarDate, KyurekiCalendarDate } from "@amgm-masamune/calendar-date";
 
 // 2025年9月22日
 const isoDate = ISOCalendarDate.from([2025, 9, 22]);
